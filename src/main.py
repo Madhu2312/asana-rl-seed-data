@@ -7,6 +7,7 @@ from src.generators.teams import (
 from src.generators.users import generate_users
 from src.generators.projects import generate_projects
 from src.generators.tasks import generate_tasks
+from src.generators.attachments import generate_attachments
 
 from src.generators.comments import generate_subtasks_and_comments
 
@@ -33,6 +34,9 @@ def main():
 	
     print("▶ Creating subtasks and comments...")
     generate_subtasks_and_comments(conn)
+
+    print("▶ Creating attachments...")
+    generate_attachments(conn)
 
 
     conn.close()
