@@ -16,7 +16,7 @@ The goal is \*\*not\*\* to generate random synthetic data, but to create \*\*dis
 
 
 
-\##  Key Design Principles
+\## Key Design Principles
 
 
 
@@ -34,7 +34,7 @@ The goal is \*\*not\*\* to generate random synthetic data, but to create \*\*dis
 
 \- \*\*Temporal consistency\*\*  
 
-&nbsp; All timestamps respect causal ordering (creation → due date → completion → comments).
+&nbsp; All timestamps respect causal ordering (creation → due date → completion → comments → attachments).
 
 
 
@@ -48,7 +48,7 @@ The goal is \*\*not\*\* to generate random synthetic data, but to create \*\*dis
 
 
 
-\##  What This Generates
+\## What This Generates
 
 
 
@@ -62,9 +62,15 @@ The goal is \*\*not\*\* to generate random synthetic data, but to create \*\*dis
 
 \- ~40k+ tasks with realistic deadlines and completion behavior
 
-\- ~130k+ subtasks
+\- ~45k+ subtasks
 
-\- ~140k+ comments with manager-heavy discussion patterns
+\- ~50k+ comments with manager-heavy discussion patterns
+
+\- Attachments metadata (file type, uploader, timestamp)
+
+\- Semantic tags with many-to-many task mappings
+
+\- Structured custom fields and per-task field values
 
 
 
@@ -76,17 +82,41 @@ All data is stored in a single \*\*SQLite database\*\*.
 
 
 
-\##  How to Run
+\## Extended Metadata Support
 
 
 
-\### 1. Setup environment
+The dataset includes additional metadata tables to more closely model real-world task management systems:
+
+
+
+\- Tags and task–tag mappings for semantic task categorization
+
+\- Custom fields and values for structured task attributes (e.g., priority, effort)
+
+\- Attachments metadata capturing file type, uploader, and timestamp
+
+
+
+All metadata is generated deterministically using scripted generators, ensuring reproducibility while providing rich contextual signals for downstream reinforcement learning and LLM-based agents.
+
+
+
+---
+
+
+
+\## How to Run
+
+
+
+\### 1. Set up the environment
 
 ```bash
 
 python -m venv venv
 
-source venv/bin/activate  # Windows: venv\\Scripts\\activate
+venv\\Scripts\\activate    # Windows
 
 pip install -r requirements.txt
 
