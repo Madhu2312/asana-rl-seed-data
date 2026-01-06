@@ -150,3 +150,15 @@ CREATE TABLE attachments (
     FOREIGN KEY (task_id) REFERENCES tasks(task_id),
     FOREIGN KEY (uploaded_by) REFERENCES users(user_id)
 );
+
+CREATE TABLE tags (
+    tag_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE task_tags (
+    task_id TEXT NOT NULL,
+    tag_id TEXT NOT NULL,
+    FOREIGN KEY (task_id) REFERENCES tasks(task_id),
+    FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
+);
