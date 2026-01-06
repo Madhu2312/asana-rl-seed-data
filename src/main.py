@@ -9,7 +9,7 @@ from src.generators.projects import generate_projects
 from src.generators.tasks import generate_tasks
 from src.generators.attachments import generate_attachments
 from src.generators.tags import generate_tags
-
+from src.generators.custom_fields import generate_custom_fields
 from src.generators.comments import generate_subtasks_and_comments
 
 def main():
@@ -41,6 +41,9 @@ def main():
 
     print("▶ Creating tags...")
     generate_tags(conn)
+
+    print("▶ Creating custom fields...")
+    generate_custom_fields(conn)
 
 
 
