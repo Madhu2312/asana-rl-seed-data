@@ -4,20 +4,20 @@ PRAGMA foreign_keys = ON;
 -- ORGANIZATION & PEOPLE
 -- ===============================
 
-CREATE TABLE organizations (
+CREATE TABLE IF NOT EXISTS organizations (
     org_id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL
 );
 
-CREATE TABLE teams (
+CREATE TABLE IF NOT EXISTS teams (
     team_id TEXT PRIMARY KEY,
     org_id TEXT NOT NULL,
     name TEXT NOT NULL,
     FOREIGN KEY (org_id) REFERENCES organizations(org_id)
 );
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id TEXT PRIMARY KEY,
     org_id TEXT NOT NULL,
     full_name TEXT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE users (
     FOREIGN KEY (org_id) REFERENCES organizations(org_id)
 );
 
-CREATE TABLE team_memberships (
+CREATE TABLE IF NOT EXISTS team_memberships (
     team_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
     PRIMARY KEY (team_id, user_id),
@@ -39,7 +39,7 @@ CREATE TABLE team_memberships (
 -- PROJECT STRUCTURE
 -- ===============================
 
-CREATE TABLE projects (
+CREATE TABLE IF NOT EXISTS projects (
     project_id TEXT PRIMARY KEY,
     team_id TEXT NOT NULL,
     name TEXT NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE projects (
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
 );
 
-CREATE TABLE sections (
+CREATE TABLE IF NOT EXISTS sections (
     section_id TEXT PRIMARY KEY,
     project_id TEXT NOT NULL,
     name TEXT NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE sections (
 -- TASKS & SUBTASKS
 -- ===============================
 
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
     task_id TEXT PRIMARY KEY,
     project_id TEXT NOT NULL,
     section_id TEXT NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE tasks (
     FOREIGN KEY (assignee_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE subtasks (
+CREATE TABLE IF NOT EXISTS subtasks (
     subtask_id TEXT PRIMARY KEY,
     parent_task_id TEXT NOT NULL,
     assignee_id TEXT,
@@ -92,7 +92,7 @@ CREATE TABLE subtasks (
 -- COMMENTS
 -- ===============================
 
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     comment_id TEXT PRIMARY KEY,
     task_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
@@ -103,45 +103,10 @@ CREATE TABLE comments (
 );
 
 -- ===============================
--- CUSTOM FIELDS
+-- ATTACHMENTS (METADATA ONLY)
 -- ===============================
 
-CREATE TABLE custom_field_definitions (
-    field_id TEXT PRIMARY KEY,
-    project_id TEXT NOT NULL,
-    name TEXT NOT NULL,
-    field_type TEXT NOT NULL,
-    FOREIGN KEY (project_id) REFERENCES projects(project_id)
-);
-
-CREATE TABLE custom_field_values (
-    task_id TEXT NOT NULL,
-    field_id TEXT NOT NULL,
-    value TEXT NOT NULL,
-    PRIMARY KEY (task_id, field_id),
-    FOREIGN KEY (task_id) REFERENCES tasks(task_id),
-    FOREIGN KEY (field_id) REFERENCES custom_field_definitions(field_id)
-);
-
--- ===============================
--- TAGS
--- ===============================
-
-CREATE TABLE tags (
-    tag_id TEXT PRIMARY KEY,
-    name TEXT NOT NULL
-);
-
-CREATE TABLE task_tags (
-    task_id TEXT NOT NULL,
-    tag_id TEXT NOT NULL,
-    PRIMARY KEY (task_id, tag_id),
-    FOREIGN KEY (task_id) REFERENCES tasks(task_id),
-    FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
-);
-
-
-CREATE TABLE attachments (
+CREATE TABLE IF NOT EXISTS attachments (
     attachment_id TEXT PRIMARY KEY,
     task_id TEXT NOT NULL,
     file_type TEXT NOT NULL,
@@ -151,14 +116,37 @@ CREATE TABLE attachments (
     FOREIGN KEY (uploaded_by) REFERENCES users(user_id)
 );
 
-CREATE TABLE tags (
+-- ===============================
+-- TAGS
+-- ===============================
+
+CREATE TABLE IF NOT EXISTS tags (
     tag_id TEXT PRIMARY KEY,
     name TEXT NOT NULL
 );
 
-CREATE TABLE task_tags (
+CREATE TABLE IF NOT EXISTS task_tags (
     task_id TEXT NOT NULL,
     tag_id TEXT NOT NULL,
     FOREIGN KEY (task_id) REFERENCES tasks(task_id),
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
+);
+
+-- ===============================
+-- CUSTOM FIELDS
+-- ===============================
+
+CREATE TABLE IF NOT EXISTS custom_field_definitions (
+    field_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    field_type TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS custom_field_values (
+    value_id TEXT PRIMARY KEY,
+    task_id TEXT NOT NULL,
+    field_id TEXT NOT NULL,
+    value TEXT NOT NULL,
+    FOREIGN KEY (task_id) REFERENCES tasks(task_id),
+    FOREIGN KEY (field_id) REFERENCES custom_field_definitions(field_id)
 );
